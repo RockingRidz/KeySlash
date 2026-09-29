@@ -1,34 +1,25 @@
-3-Key Macropad
-A custom 3-key mechanical keyboard macropad powered by a Seeeduino XIAO microcontroller. Designed with a clean sandwich-mount case featuring an integrated USB port cutout.
+KeySlash Mini Keyboard
+KeySlash is a wonderful mini keyboard made by me and designed by me, and this is the complete GitHub repo containing all of the folders that you need to duplicate it or recreate it. What this is, is essentially a four-key keyboard with one OLED screen and one clickable rotary encoder that gives you ultimate control right at your desk. The rotary encoder is especially cool because you can both rotate it smoothly and click it down for instant actions.
 
-Features
-Compact 3-key layout designed for custom shortcuts and macros.
+What Each Part Does
+OLED Screen: Displays cool animations, custom text, and different graphics to spark creativity and give your setup a living, breathing feel.
 
-Sandwich-mount switch plate architecture for a solid typing feel.
+Four Macro Buttons: Each switch holds a dedicated shortcut to speed up your workflow:
 
-Custom-machined case base with a 3mm floor and internal clearance for wiring and the XIAO microcontroller.
+Button 1: Opens Codex directly so you can start coding instantly.
+Button 2: Opens Claude for quick AI assistance.
+Button 3: Opens Google Chrome to browse the web.
+Button 4: Opens YouTube to kick back and enjoy.
+Rotary Encoder: Twisting the encoder controls your system volume on the fly, while clicking it directly launches Spotify.
+![PCB](images/finalpcb.png)
 
-Tailored USB-C port cutout for seamless cable connection.
+PCB
+So this was my 2nd PCB design made by me and due to StarDance i was able to learn this wonderful skill. I dsigned the SCM the PCB which was increadibly fun yet frustrating when the wires clash!!
+![SCM](images/finalscm.png)
 
-Bill of Materials (BOM)
-Microcontroller: Seeeduino XIAO (RP2040 or SAMD21)
+Functionality & 3D Enclosure
+This is a heavily functionality-based mini keyboard designed to help you finish tasks faster while serving as an eye-catching centerpiece on your desk.
 
-Switches: 3 x Cherry MX compatible mechanical switches
+The 3D enclosure is a particularly special part of the build, featuring a unique color scheme of dark gray, light gray, and red. Each section has clean text and custom geometric styling, including a specialized clear window section designed to house a piece of acrylic that proudly showcases the Seeed Studio XIAO ESP32-S3 microcontroller board inside. It is a rewarding DIY project that brings both utility and personal style together.
+![Case](images/finalKS.png)
 
-Keycaps: 3 x MX-compatible keycaps
-
-Case & Plate: 3D printed case base and switch plate (STL files included)
-
-Wiring: Hookup wire or a custom PCB matching the layout
-
-3D Printing & Assembly
-Print the Files: Slice and print the exported case base and switch plate STL files. Recommended print settings include 0.2mm layer height and at least 20% infill.
-
-Mount the Plate: Snap your 3 mechanical switches into the switch plate cutouts.
-
-Wire the Switches: Wire the switches to your Seeeduino XIAO using a standard matrix or direct GPIO wiring approach.
-
-Assemble the Case: Place the wired assembly into the internal cavity of the case base, aligning the USB-C port with the rear cutout, and secure the plate to the top rim.
-
-Firmware
-This macropad is compatible with custom firmware platforms like QMK or CircuitPython depending on your Seeeduino XIAO variant. Configure your pin mappings according to the GPIO pins connected to your switches.
