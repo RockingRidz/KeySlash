@@ -1,94 +1,94 @@
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 #include <Keyboard.h>
-#include <Mouse.h>
 
-// Pin Definitions for your 3 macro keys
-const int KEY_CODEX = 2;
-const int KEY_GOOGLE = 3;
-const int KEY_YOUTUBE = 4;
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 32
+#define OLED_RESET -1
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-// Pin Definitions for the Vertical Rotary Encoder (Volume Wheel)
-const int ENCODER_CLK = 5; // A Phase pin
-const int ENCODER_DT = 6;  // B Phase pin
-const int ENCODER_SW = 7;  // Push button switch (Mute)
+const int switchPins[] = {D0, D1, D2, D3};
+const int encoderA = D4;
+const int encoderB = D5;
+const int encoderBtn = D6;
 
-int lastClkState;
+volatile int encoderPos = 0;
+int lastEncoderState;
 
 void setup() {
-  // Initialize USB HID controls
+  Serial.begin(9600);
   Keyboard.begin();
 
-  // Configure button pins with internal pull-ups
-  pinMode(KEY_CODEX, INPUT_PULLUP);
-  pinMode(KEY_GOOGLE, INPUT_PULLUP);
-  pinMode(KEY_YOUTUBE, INPUT_PULLUP);
+  for(int i = 0; i < 4; i++) {
+    pinMode(switchPins[i], INPUT_PULLUP);
+  }
 
-  // Configure Rotary Encoder pins
-  pinMode(ENCODER_CLK, INPUT);
-  pinMode(ENCODER_DT, INPUT);
-  pinMode(ENCODER_SW, INPUT_PULLUP);
+  pinMode(encoderA, INPUT_PULLUP);
+  pinMode(encoderB, INPUT_PULLUP);
+  pinMode(encoderBtn, INPUT_PULLUP);
+  
+  lastEncoderState = digitalRead(encoderA);
 
-  lastClkState = digitalRead(ENCODER_CLK);
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    while(1);
+  }
+
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.println(F("Macropad Ready"));
+  display.display();
+  delay(500);
 }
 
 void loop() {
-  // 1. Press Key 1 to open Codex / VS Code
-  if (digitalRead(KEY_CODEX) == LOW) {
-    Keyboard.press(KEY_LEFT_GUI);
-    Keyboard.press('r');
-    delay(100);
-    Keyboard.releaseAll();
-    delay(200);
-    
-    Keyboard.print("code");
-    Keyboard.write(KEY_RETURN);
-    delay(1000);
-  }
+  for(int i = 0; i < 4; i++) {
+    if(digitalRead(switchPins[i]) == LOW) {
+      display.clearDisplay();
+      display.setCursor(0,0);
+      display.print(F("Switch "));
+      display.print(i + 1);
+      display.println(F(" Pressed"));
+      display.display();
 
-  // 2. Press Key 2 to open Google Chrome
-  if (digitalRead(KEY_GOOGLE) == LOW) {
-    Keyboard.press(KEY_LEFT_GUI);
-    Keyboard.press('r');
-    delay(100);
-    Keyboard.releaseAll();
-    delay(200);
-
-    Keyboard.print("https://www.google.com");
-    Keyboard.write(KEY_RETURN);
-    delay(1000);
-  }
-
-  // 3. Press Key 3 to open YouTube
-  if (digitalRead(KEY_YOUTUBE) == LOW) {
-    Keyboard.press(KEY_LEFT_GUI);
-    Keyboard.press('r');
-    delay(100);
-    Keyboard.releaseAll();
-    delay(200);
-
-    Keyboard.print("https://www.youtube.com");
-    Keyboard.write(KEY_RETURN);
-    delay(1000);
-  }
-
-  // 4. Handle Rotary Encoder (Volume Up / Down)
-  int currentClkState = digitalRead(ENCODER_CLK);
-  if (currentClkState != lastClkState && currentClkState == LOW) {
-    if (digitalRead(ENCODER_DT) == HIGH) {
-      // Turned Clockwise -> Volume Up
-      // Note: Consumer control media keys can be used depending on your core library setup
-      Keyboard.write(KEY_MEDIA_VOLUME_UP); 
-    } else {
-      // Turned Counter-Clockwise -> Volume Down
-      Keyboard.write(KEY_MEDIA_VOLUME_DOWN);
+      if(i == 0) Keyboard.write('a');
+      else if(i == 1) Keyboard.write('b');
+      else if(i == 2) Keyboard.write('c');
+      else if(i == 3) Keyboard.write('d');
+      
+      delay(200);
     }
   }
-  lastClkState = currentClkState;
 
-  // 5. Handle Encoder Button Press (Mute Toggle)
-  if (digitalRead(ENCODER_SW) == LOW) {
-    Keyboard.write(KEY_MEDIA_MUTE);
-    delay(300); // Debounce delay
+  int currentEncoderState = digitalRead(encoderA);
+  if (currentEncoderState != lastEncoderState && currentEncoderState == HIGH) {
+    if (digitalRead(encoderB) != currentEncoderState) {
+      encoderPos++;
+      Keyboard.press(KEY_UP_ARROW);
+      Keyboard.releaseAll();
+    } else {
+      encoderPos--;
+      Keyboard.press(KEY_DOWN_ARROW);
+      Keyboard.releaseAll();
+    }
+    
+    display.clearDisplay();
+    display.setCursor(0,0);
+    display.print(F("Encoder: "));
+    display.println(encoderPos);
+    display.display();
   }
+  lastEncoderState = currentEncoderState;
 
-  delay(10);
+  if(digitalRead(encoderBtn) == LOW) {
+    display.clearDisplay();
+    display.setCursor(0,0);
+    display.println(F("Encoder Clicked"));
+    display.display();
+    
+    Keyboard.write(' ');
+    delay(200);
+  }
 }
