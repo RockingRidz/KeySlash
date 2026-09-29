@@ -1,4 +1,5 @@
-KeySlash Mini Keyboard
+#*KeySlash Mini Keyboard*#
+
 KeySlash is a wonderful mini keyboard made by me and designed by me, and this is the complete GitHub repo containing all of the folders that you need to duplicate it or recreate it. What this is, is essentially a four-key keyboard with one OLED screen and one clickable rotary encoder that gives you ultimate control right at your desk. The rotary encoder is especially cool because you can both rotate it smoothly and click it down for instant actions.
 
 What Each Part Does
